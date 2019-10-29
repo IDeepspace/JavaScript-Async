@@ -596,10 +596,10 @@ const makeRequest = () => {
       return promise2(value1)
         .then(value2 => {
           // do something          
-          return promise3(value1, value2)
-        })
-    })
-}
+          return promise3(value1, value2);
+        });
+    });
+};
 ```
 
 我们可以做些改变，减少嵌套：将 `value1` 和 `value2` 放进 `Promise.all` 来避免深层嵌套：
@@ -624,9 +624,9 @@ const makeRequest = () => {
 
 ```javascript
 const makeRequest = async () => {
-  const value1 = await promise1()
-  const value2 = await promise2(value1)
-  return promise3(value1, value2)
+  const value1 = await promise1();
+  const value2 = await promise2(value1);
+  return promise3(value1, value2);
 }
 ```
 
@@ -642,16 +642,16 @@ const makeRequest = () => {
     .then(() => callAPromise())
     .then(() => callAPromise())
     .then(() => {
-      throw new Error("oops");
-    })
-}
+      throw new Error('oops');
+    });
+};
 
 makeRequest()
   .catch(err => {
     console.log(err);
     // output
     // Error: oops at callAPromise.then.then.then.then.then (index.js:8:13)
-  })
+  });
 ```
 
 `Promise` 链中返回的错误栈不会给出错误发生位置的详细原因。更糟糕的是，它会误导我们：错误栈中唯一的函数名为 `callAPromise`，然而它和错误没有关系。(当然文件名和行号还是有用的)。
@@ -692,9 +692,9 @@ const makeRequest = () => {
     .then(() => callAPromise())
     .then(() => callAPromise())
     .then(() => {
-      throw new Error("oops");
-    })
-}
+      throw new Error('oops');
+    });
+};
 ```
 
 并且，如果我们在 `.then` 代码块中设置断点，使用 `Step Over` 快捷键时，调试器不会跳到下一个 `.then`，它会跳过异步代码。
@@ -766,8 +766,6 @@ const main = async () => {
 // 执行
 main();
 ```
-
-
 
 在这个例子中，通过 `forEach` 遍历地将每一个数字都执行 `doMulti` 操作。代码执行的结果是：首先会立即打印 `start`、`end` 。`2` 秒后，一次性输出 `1，4，9`。
 
