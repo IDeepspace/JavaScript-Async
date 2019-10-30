@@ -723,7 +723,91 @@ const makeRequest = async () => {
 
 
 
-### 九、一个问题
+### 九、await in loops
+
+下面我们看看在 `for` 循环中如何正确的使用 `await`。
+
+我们调用一个知乎的 `api` ：
+
+```javascript
+const fetch = require('node-fetch');
+const bluebird = require('bluebird');
+
+const getZhihuColumn = async (id) => {
+  await bluebird.delay(1000);
+  const url = `https://zhuanlan.zhihu.com/api/columns/${id}`;
+  const response = await fetch(url);
+  return await response.json();
+};
+```
+
+现在有一个 `id` 列表，遍历里面的 `id`，在循环中调用 `getZhihuColumn`：
+
+```javascript
+const showColumnInfo = async () => {
+  console.time('showColumnInfo');
+
+  const names = ['feweekly', 'toolingtips'];
+
+  for (const name of names) {
+    const column = await getZhihuColumn(name);
+    console.log(`Name: ${column.title} `);
+    console.log(`Intro: ${column.intro} `);
+  }
+
+  console.timeEnd('showColumnInfo');
+};
+
+showColumnInfo();
+```
+
+运行结果：
+
+```
+Name: 前端周刊 
+Intro: 在前端领域跟上时代的脚步，广度和深度不断精进 
+Name: tooling bits 
+Intro: 工欲善其事必先利其器 
+showColumnInfo: 2446.938ms
+```
+
+可以看到上面的这种写法也是串行，只不过是在循环中串行。那怎么把串行改成并行，让代码运行的更快呢？思路是：**先触发所有的请求，拿到一个 Promise 的数组，然后遍历这个数组，等待里面的结果。** 实现如下：
+
+```javascript
+const showColumnInfo = async () => {
+  console.time('showColumnInfo');
+
+  const names = ['feweekly', 'toolingtips'];
+
+  const promises = names.map(name => getZhihuColumn(name));
+
+  for (const promise of promises) {
+    const column = await promise;
+    console.log(`Name: ${column.title} `);
+    console.log(`Intro: ${column.intro} `);
+  }
+
+  console.timeEnd('showColumnInfo');
+};
+
+showColumnInfo();
+```
+
+运行结果：
+
+```javascript
+Name: 前端周刊 
+Intro: 在前端领域跟上时代的脚步，广度和深度不断精进 
+Name: tooling bits 
+Intro: 工欲善其事必先利其器 
+showColumnInfo: 1255.428ms
+```
+
+可以看到运行时间节省了不少。
+
+
+
+### 十、forEach 的问题
 
 #### 1、问题描述
 
