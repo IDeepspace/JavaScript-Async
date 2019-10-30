@@ -5,7 +5,7 @@ const getZhihuColumn = async (id) => {
   await bluebird.delay(1000);
   const url = `https://zhuanlan.zhihu.com/api/columns/${id}`;
   const response = await fetch(url);
-  return await response.json();
+  return response.json();
 };
 
 // const showColumnInfo = async () => {
