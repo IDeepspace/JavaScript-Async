@@ -2,7 +2,7 @@
 
 ### 一、Promise 是什么？
 
-不是讲 `async/await` 吗？为什么会提到 `Promise`？
+不是讲 `async/await` 吗？为什么会提到 `Promise` ？
 
 实际上，`async/await` 是 `Promise` 的一个拓展，所以，想要更好地理解 `async/await`，需要先理解 `Promise` 。
 
@@ -473,6 +473,8 @@ testAsync().then(v => {
 因为 `async` 函数返回一个 `Promise` 对象，所以 `await` 可以用于等待一个 `async` 函数的返回值——这也可以说是 `await` 在等 `async` 函数。
 
 但要清楚，`await` 等的实际是一个返回值 —— 一个 [`Promise`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise) 对象或者任何要等待的值， `await` 不仅仅用于等 `Promise` 对象，它可以等任意表达式的结果，所以，`await` 后面实际是可以接普通函数调用或者直接量的。
+
+> 实际上，当 `await` 等待的不是一个 `Promise` 的时候，它就有一个隐式调用：`Promise.resolve("hello async");`
 
 ```javascript
 function getSomething() {
